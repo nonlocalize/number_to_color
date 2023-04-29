@@ -6,7 +6,7 @@ require "minitest/autorun"
 # Class to generate a hex color code based on a value and domain.
 #
 # @author Luke Fair <lfair@raysbaseball.com>
-class NumberInRange
+class ColorCode
   # '#0ea5e9'
   DEFAULT_POSITIVE = [14, 165, 233].freeze
   # 'f87171'
@@ -193,39 +193,39 @@ class TestNumberToColor < Minitest::Test
   end
 
   def test_neutral_color
-    assert_equal neutral, NumberInRange.new(value: 1, domain: [0, 2]).hex_color
+    assert_equal neutral, ColorCode.new(value: 1, domain: [0, 2]).hex_color
   end
 
   def test_positive_color
-    assert_equal max_positive, NumberInRange.new(value: 2, domain: [0, 2]).hex_color
+    assert_equal max_positive, ColorCode.new(value: 2, domain: [0, 2]).hex_color
   end
 
   def test_negative_color
-    assert_equal max_negative, NumberInRange.new(value: 0, domain: [0, 2]).hex_color
+    assert_equal max_negative, ColorCode.new(value: 0, domain: [0, 2]).hex_color
   end
 
   def test_neutral_color_with_reverse_domain
-    assert_equal neutral, NumberInRange.new(value: 1, domain: [2, 0]).hex_color
+    assert_equal neutral, ColorCode.new(value: 1, domain: [2, 0]).hex_color
   end
 
   def test_positive_color_when_reversed_domain
-    assert_equal max_positive, NumberInRange.new(value: 0, domain: [2, 0]).hex_color
+    assert_equal max_positive, ColorCode.new(value: 0, domain: [2, 0]).hex_color
   end
 
   def test_negative_color_with_reversed_domain
-    assert_equal max_negative, NumberInRange.new(value: 2, domain: [2, 0]).hex_color
+    assert_equal max_negative, ColorCode.new(value: 2, domain: [2, 0]).hex_color
   end
 
   def test_neutral_color_with_linear_midpoint
-    assert_equal neutral, NumberInRange.new(value: 2, domain: [0, 2, 4]).hex_color
+    assert_equal neutral, ColorCode.new(value: 2, domain: [0, 2, 4]).hex_color
   end
 
   def test_positive_color_with_linear_midpoint
-    assert_equal max_positive, NumberInRange.new(value: 4, domain: [0, 2, 4]).hex_color
+    assert_equal max_positive, ColorCode.new(value: 4, domain: [0, 2, 4]).hex_color
   end
 
   def test_negative_color_with_linear_midpoint
-    assert_equal max_negative, NumberInRange.new(value: 0, domain: [0, 2, 4]).hex_color
+    assert_equal max_negative, ColorCode.new(value: 0, domain: [0, 2, 4]).hex_color
   end
 
   private
