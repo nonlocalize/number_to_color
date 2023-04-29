@@ -59,6 +59,10 @@ class NumberToColorTest < Minitest::Test
     assert_equal "#000000", ColorCode.new(value: 0, domain: [0, 2], negative_hex: "#000000").hex_color
   end
 
+  def test_neutral_color_with_non_linear_midpoint
+    assert_equal neutral, ColorCode.new(value: 2.5, domain: [0, 2.5, 3]).hex_color
+  end
+
   private
 
   attr_reader :max_positive, :max_negative, :neutral
