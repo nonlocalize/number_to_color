@@ -1,41 +1,61 @@
 # frozen_string_literal: true
 
 require_relative "number_to_color/version"
-
-# frozen_string_literal: true
+require "minitest/autorun"
 
 # Class to generate a hex color code based on a value and domain.
 #
 # @author Luke Fair <lfair@raysbaseball.com>
 class NumberInRange
   # '#0ea5e9'
-  BLUE_RGB = [14, 165, 233].freeze
-  # 'ef4444'
-  RED_RGB = [248, 113, 113].freeze
+  DEFAULT_POSITIVE = [14, 165, 233].freeze
+  # 'f87171'
+  DEFAULT_NEGATIVE = [248, 113, 113].freeze
   # 'fff'
-  WHITE_RGB = [255, 255, 255].freeze
+  DEFAULT_NEUTRAL = [255, 255, 255].freeze
 
   # @param [Number] value The table cell's numerical value
   # @param [Array] domain - Two or three-element arrays (e.g., [0, 20], [-20, 0, 20])
-  def initialize(value:, domain: nil)
+  # @param [String] neutral_hex - The hex code to use for the neutral color.
+  # @param [String] positive_hex - The hex code to use for the positive color.
+  # @param [String] negative_hex - The hex code to use for the negative color.
+  def initialize(
+    value:,
+    domain: nil,
+    neutral_hex: nil,
+    positive_hex: nil,
+    negative_hex: nil
+  )
     @value = value.to_f
     @domain = domain
+    @neutral_hex = neutral_hex
+    @negative_hex = negative_hex
+    @positive_hex = positive_hex
+
+    set_colors
   end
 
   # The public method to return the hex code.
   # @return [String].
-  def to_hex
-    Kernel.format(
-      "#%02x%02x%02x",
-      final_rgb[:r],
-      final_rgb[:g],
-      final_rgb[:b]
-    )
+  def hex_color
+    rgb_to_hex(red: final_rgb[:r], green: final_rgb[:g], blue: final_rgb[:b])
+  end
+
+  # Returns the hex code for any RGB color.
+  # @return [String].
+  def rgb_to_hex(red:, green:, blue:)
+    "##{Kernel.format("%02x%02x%02x", red, green, blue)}"
   end
 
   private
 
-  attr_reader :value, :domain
+  attr_reader :value, :domain, :positive_hex, :negative_hex, :neutral_hex, :positive_rgb, :negative_rgb, :neutral_rgb
+
+  def set_colors
+    @positive_rgb = positive_hex ? hex_to_rgb(positive_hex) : DEFAULT_POSITIVE
+    @negative_rgb = negative_hex ? hex_to_rgb(negative_hex) : DEFAULT_NEGATIVE
+    @neutral_rgb = neutral_hex ? hex_to_rgb(neutral_hex) : DEFAULT_NEUTRAL
+  end
 
   # If the domain is inverted, switch its order.
   # @return [Array].
@@ -86,21 +106,21 @@ class NumberInRange
   # Returns the start color in RGB format.
   # @return [Array].
   def start_color
-    return BLUE_RGB if inverted_order? && value_is_negative?
+    return positive_rgb if inverted_order? && value_is_negative?
 
-    return RED_RGB if value_is_negative?
+    return negative_rgb if value_is_negative?
 
-    WHITE_RGB
+    neutral_rgb
   end
 
   # Returns the end color in RGB format.
   # @return [Array].
   def end_color
-    return WHITE_RGB if value_is_negative?
+    return neutral_rgb if value_is_negative?
 
-    return RED_RGB if inverted_order?
+    return negative_rgb if inverted_order?
 
-    BLUE_RGB
+    positive_rgb
   end
 
   # Returns if the value is considered negative.
@@ -161,5 +181,19 @@ class NumberInRange
 
   def distance_difference
     1 - distance_from_min_value
+  end
+end
+
+class TestNumberToColor < Minitest::Test
+  def test_neutral_color
+    assert_equal "#ffffff", NumberInRange.new(value: 1, domain: [0, 2]).hex_color
+  end
+
+  def test_positive_color
+    assert_equal "#0ea5e9", NumberInRange.new(value: 2, domain: [0, 2]).hex_color
+  end
+
+  def test_negative_color
+    assert_equal "#f87171", NumberInRange.new(value: 0, domain: [0, 2]).hex_color
   end
 end
