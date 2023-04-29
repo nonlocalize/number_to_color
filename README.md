@@ -7,8 +7,9 @@ Color code a value within a numerical range.
 ```
 require 'number_to_color'
 
-ColorCode.new(value: 2, domain: [1, 3]).value_to_color
+ColorCode.new(value: 2, domain: [1, 3]).to_hex
 ```
+<div style="height: 4px; width: 4px; background: #000"></div>
 
 ## Development
 
