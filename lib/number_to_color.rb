@@ -40,12 +40,6 @@ class ColorCode
     rgb_to_hex(red: final_rgb[:r], green: final_rgb[:g], blue: final_rgb[:b])
   end
 
-  # Returns the hex code for any RGB color.
-  # @return [String].
-  def rgb_to_hex(red:, green:, blue:)
-    "##{Kernel.format("%02x%02x%02x", red, green, blue)}"
-  end
-
   private
 
   attr_reader :value, :domain, :positive_hex, :negative_hex, :neutral_hex, :positive_rgb, :negative_rgb, :neutral_rgb
@@ -54,6 +48,19 @@ class ColorCode
     @positive_rgb = positive_hex ? hex_to_rgb(positive_hex) : DEFAULT_POSITIVE
     @negative_rgb = negative_hex ? hex_to_rgb(negative_hex) : DEFAULT_NEGATIVE
     @neutral_rgb = neutral_hex ? hex_to_rgb(neutral_hex) : DEFAULT_NEUTRAL
+  end
+
+  # Returns the hex code for any RGB color.
+  # @return [String].
+  def rgb_to_hex(red:, green:, blue:)
+    "##{Kernel.format("%02x%02x%02x", red, green, blue)}"
+  end
+
+  # Returns the hex code for any RGB color.
+  # @param [String] hex The hex code to convert.
+  # @return [Array].
+  def hex_to_rgb(hex)
+    hex.scan(/.{2}/).map(&:hex)
   end
 
   # If the domain is inverted, switch its order.
