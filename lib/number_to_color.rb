@@ -15,21 +15,21 @@ class ColorCode
 
   # @param [Number] value The table cell's numerical value
   # @param [Array] domain - Two or three-element arrays (e.g., [0, 20], [-20, 0, 20])
-  # @param [String] neutral_hex - The hex code to use for the neutral color.
-  # @param [String] positive_hex - The hex code to use for the positive color.
-  # @param [String] negative_hex - The hex code to use for the negative color.
+  # @param [String] neutral_color - The hex code to use for the neutral color.
+  # @param [String] positive_color - The hex code to use for the positive color.
+  # @param [String] negative_color - The hex code to use for the negative color.
   def initialize(
     value:,
     domain: nil,
-    neutral_hex: nil,
-    positive_hex: nil,
-    negative_hex: nil
+    neutral_color: nil,
+    positive_color: nil,
+    negative_color: nil
   )
     @value = value.to_f
     @domain = domain
-    @neutral_hex = neutral_hex
-    @negative_hex = negative_hex
-    @positive_hex = positive_hex
+    @neutral_color = neutral_color
+    @negative_color = negative_color
+    @positive_color = positive_color
 
     set_colors
   end
@@ -42,12 +42,13 @@ class ColorCode
 
   private
 
-  attr_reader :value, :domain, :positive_hex, :negative_hex, :neutral_hex, :positive_rgb, :negative_rgb, :neutral_rgb
+  attr_reader :value, :domain, :positive_color, :negative_color, :neutral_color, :positive_rgb, :negative_rgb,
+              :neutral_rgb
 
   def set_colors
-    @positive_rgb = positive_hex ? hex_to_rgb(positive_hex) : DEFAULT_POSITIVE
-    @negative_rgb = negative_hex ? hex_to_rgb(negative_hex) : DEFAULT_NEGATIVE
-    @neutral_rgb = neutral_hex ? hex_to_rgb(neutral_hex) : DEFAULT_NEUTRAL
+    @positive_rgb = positive_color ? format_color(positive_color) : DEFAULT_POSITIVE
+    @negative_rgb = negative_color ? format_color(negative_color) : DEFAULT_NEGATIVE
+    @neutral_rgb = neutral_color ? format_color(neutral_color) : DEFAULT_NEUTRAL
   end
 
   # Returns the hex code for any RGB color.
@@ -57,10 +58,12 @@ class ColorCode
   end
 
   # Returns the hex code for any RGB color.
-  # @param [String] hex The hex code to convert.
+  # @param [String|Array] color The hex or rgb code.
   # @return [Array].
-  def hex_to_rgb(hex)
-    hex.scan(/.{2}/).map(&:hex)
+  def format_color(color)
+    return color.scan(/.{2}/).map(&:hex) if color.instance_of? String
+
+    color
   end
 
   # If the domain is inverted, switch its order.

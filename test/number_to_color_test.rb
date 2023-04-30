@@ -47,16 +47,28 @@ class NumberToColorTest < Minitest::Test
     assert_equal max_negative, ColorCode.new(value: 0, domain: [0, 2, 4]).hex_color
   end
 
-  def test_custom_neutral_color
-    assert_equal "#000000", ColorCode.new(value: 1, domain: [0, 2], neutral_hex: "#000000").hex_color
+  def test_custom_neutral_hex_color
+    assert_equal "#000000", ColorCode.new(value: 1, domain: [0, 2], neutral_color: "#000000").hex_color
   end
 
-  def test_custom_positive_color
-    assert_equal "#000000", ColorCode.new(value: 2, domain: [0, 2], positive_hex: "#000000").hex_color
+  def test_custom_positive_hex_color
+    assert_equal "#000000", ColorCode.new(value: 2, domain: [0, 2], positive_color: "#000000").hex_color
   end
 
-  def test_custom_negative_color
-    assert_equal "#000000", ColorCode.new(value: 0, domain: [0, 2], negative_hex: "#000000").hex_color
+  def test_custom_negative_hex_color
+    assert_equal "#000000", ColorCode.new(value: 0, domain: [0, 2], negative_color: "#000000").hex_color
+  end
+
+  def test_custom_neutral_rgb_color
+    assert_equal "#16a34a", ColorCode.new(value: 1, domain: [0, 2], neutral_color: [22, 163, 74]).hex_color
+  end
+
+  def test_custom_positive_rgb_color
+    assert_equal "#16a34a", ColorCode.new(value: 2, domain: [0, 2], positive_color: [22, 163, 74]).hex_color
+  end
+
+  def test_custom_negative_rgb_color
+    assert_equal "#16a34a", ColorCode.new(value: 0, domain: [0, 2], negative_color: [22, 163, 74]).hex_color
   end
 
   def test_neutral_color_with_non_linear_midpoint

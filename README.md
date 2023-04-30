@@ -4,23 +4,29 @@ Color code a value within a numerical range.
 
 ## Usage
 
-### Simple linear range between two numbers
 ```
 require 'number_to_color'
+```
 
+### Simple linear range between two numbers
+```
 ColorCode.new(value: 2, domain: [1, 3]).to_hex
 
 // #ffffff (neutral color)
 ```
 
-
 ### Non-linear range
 ```
-require 'number_to_color'
-
 ColorCode.new(value: 5, domain: [1, 5, 7]).to_hex
 
 // #ffffff (neutral color)
+```
+
+### Inverted domain
+```
+ColorCode.new(value: 1, domain: [7, 1]).to_hex
+
+// #0ea5e9 ("good" color)
 ```
 
 ## Development
