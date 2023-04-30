@@ -7,29 +7,29 @@ require_relative "number_to_color/version"
 # @author Luke Fair <fair@hey.com>
 class ColorCode
   # '#0ea5e9'
-  DEFAULT_POSITIVE = [14, 165, 233].freeze
+  DEFAULT_END = [14, 165, 233].freeze
   # 'f87171'
-  DEFAULT_NEGATIVE = [248, 113, 113].freeze
+  DEFAULT_START = [248, 113, 113].freeze
   # 'fff'
-  DEFAULT_NEUTRAL = [255, 255, 255].freeze
+  DEFAULT_MIDDLE = [255, 255, 255].freeze
 
   # @param [Number] value The table cell's numerical value
   # @param [Array] domain - Two or three-element arrays (e.g., [0, 20], [-20, 0, 20])
-  # @param [String|Array] neutral_color - The hex or rgb code to use for the neutral color.
-  # @param [String|Array] positive_color - The hex or rgb code to use for the positive color.
-  # @param [String|Array] negative_color - The hex or rgb code to use for the negative color.
+  # @param [String|Array] middle_color - The hex or rgb code to use for the middle color.
+  # @param [String|Array] end_color - The hex or rgb code to use for the end color.
+  # @param [String|Array] start_color - The hex or rgb code to use for the start color.
   def initialize(
     value:,
     domain: nil,
-    neutral_color: nil,
-    positive_color: nil,
-    negative_color: nil
+    middle_color: nil,
+    end_color: nil,
+    start_color: nil
   )
     @value = value.to_f
     @domain = domain
-    @neutral_color = neutral_color
-    @negative_color = negative_color
-    @positive_color = positive_color
+    @middle_color = middle_color
+    @start_color = start_color
+    @end_color = end_color
 
     set_colors
   end
@@ -42,13 +42,13 @@ class ColorCode
 
   private
 
-  attr_reader :value, :domain, :positive_color, :negative_color, :neutral_color, :positive_rgb, :negative_rgb,
-              :neutral_rgb
+  attr_reader :value, :domain, :end_color, :start_color, :middle_color, :end_rgb, :start_rgb,
+              :middle_rgb
 
   def set_colors
-    @positive_rgb = positive_color ? format_color(positive_color) : DEFAULT_POSITIVE
-    @negative_rgb = negative_color ? format_color(negative_color) : DEFAULT_NEGATIVE
-    @neutral_rgb = neutral_color ? format_color(neutral_color) : DEFAULT_NEUTRAL
+    @end_rgb = end_color ? format_color(end_color) : DEFAULT_END
+    @start_rgb = start_color ? format_color(start_color) : DEFAULT_START
+    @middle_rgb = middle_color ? format_color(middle_color) : DEFAULT_MIDDLE
   end
 
   # Returns the hex code for any RGB color.
@@ -77,9 +77,9 @@ class ColorCode
   # Calcluate the final RGB value.
   # @return [Hash].
   def final_rgb
-    r_start, g_start, b_start = start_color
+    r_start, g_start, b_start = start_color_rgb
 
-    r_end, g_end, b_end = end_color
+    r_end, g_end, b_end = end_color_rgb
 
     {
       r: calculate_rgb_level(r_start, r_end),
@@ -114,42 +114,42 @@ class ColorCode
 
   # Returns the start color in RGB format.
   # @return [Array].
-  def start_color
-    return positive_rgb if inverted_order? && value_is_negative?
+  def start_color_rgb
+    return end_rgb if inverted_order? && value_is_start?
 
-    return negative_rgb if value_is_negative?
+    return start_rgb if value_is_start?
 
-    neutral_rgb
+    middle_rgb
   end
 
   # Returns the end color in RGB format.
   # @return [Array].
-  def end_color
-    return neutral_rgb if value_is_negative?
+  def end_color_rgb
+    return middle_rgb if value_is_start?
 
-    return negative_rgb if inverted_order?
+    return start_rgb if inverted_order?
 
-    positive_rgb
+    end_rgb
   end
 
-  # Returns if the value is considered negative.
+  # Returns if the value is considered start.
   # @return [Boolean].
-  def value_is_negative?
+  def value_is_start?
     clamped_value.between?(normalized_domain.first, mean_value) || clamped_value == mean_value
   end
 
-  # Returns the domain's min value, or what is considered 'negative'.
+  # Returns the domain's min value, or what is considered 'start'.
   # @return [Number].
   def min_value
-    return mean_value unless value_is_negative?
+    return mean_value unless value_is_start?
 
     normalized_domain.first
   end
 
-  # Returns the domain's min value, or what is considered 'negative'.
+  # Returns the domain's min value, or what is considered 'start'.
   # @return [Number].
   def max_value
-    return mean_value if value_is_negative?
+    return mean_value if value_is_start?
 
     normalized_domain.last
   end
@@ -163,14 +163,14 @@ class ColorCode
     normalized_domain.sum(0.0) / normalized_domain.size
   end
 
-  # Normalize the range in positive values [0, a_positive_value].
+  # Normalize the range in end values [0, a_end_value].
   # @return [Number].
   def normalized_max_value
     max_value - min_value
   end
 
-  # Normalize the range in positive values [0, a_positive_value].
-  # This ensures the value is positive.
+  # Normalize the range in end values [0, a_end_value].
+  # This ensures the value is end.
   # @return [Number].
   def normalized_value
     clamped_value - min_value
