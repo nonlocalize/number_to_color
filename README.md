@@ -5,13 +5,13 @@ Color code a value within a numerical range. Defaults to a linear gradient betwe
   
 
 ## Usage
-There are two required params.
 
+### Params
 * `value`: The numerical value to color code for.
 
-* `domain`: The numerical domain, or "range", for the color gradient. This can be a 2 or 3-item array. 
-* 2-item array, the midpoint is automatically set as the "neutral". In a 3-item array, you can set the midpoint to be anywhere between the first and last item (e.g., `[0, 5, 7]`.
+* `domain`: The numerical domain, or "range", for the color gradient. This can be a 2 or 3-item array. In a 2-item array, the midpoint is automatically set as the "neutral" value/color. In a 3-item array, you can set the midpoint to be anywhere between the first and last item (e.g., `[0, 5, 7]`).
 
+* `neutral_color` / `positive_color` / `negative_color`: (optional) Custom colors that can be passed in to override the defaults. These can be hex or RGB codes.
 <br>
 
 To get started, require the gem in your file.
