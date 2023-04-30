@@ -6,14 +6,14 @@ Gem::Specification.new do |spec|
   spec.name = "number_to_color"
   spec.version = NumberToColor::VERSION
   spec.authors = ["Luke Fair"]
-  spec.email = ["lfair@raysbaseball.com"]
+  spec.email = ["fair@hey.com"]
 
   spec.summary = "Color code a numerical value based on a range."
   spec.homepage = "https://github.com/nonlocalize/number_to_color"
   spec.license = "MIT"
   spec.required_ruby_version = ">= 2.6.0"
 
-  spec.metadata["allowed_push_host"] = "TODO: Set to your gem server 'https://example.com'"
+  spec.metadata["allowed_push_host"] = "https://rubygems.org/gems/number_to_color"
 
   spec.metadata["homepage_uri"] = spec.homepage
   spec.metadata["source_code_uri"] = "https://github.com/nonlocalize/number_to_color"
