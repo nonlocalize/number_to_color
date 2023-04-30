@@ -4,7 +4,7 @@ require_relative "number_to_color/version"
 
 # Class to generate a hex color code based on a value and domain.
 #
-# @author Luke Fair <lfair@raysbaseball.com>
+# @author Luke Fair <fair@hey.com>
 class ColorCode
   # '#0ea5e9'
   DEFAULT_POSITIVE = [14, 165, 233].freeze
@@ -15,9 +15,9 @@ class ColorCode
 
   # @param [Number] value The table cell's numerical value
   # @param [Array] domain - Two or three-element arrays (e.g., [0, 20], [-20, 0, 20])
-  # @param [String] neutral_color - The hex code to use for the neutral color.
-  # @param [String] positive_color - The hex code to use for the positive color.
-  # @param [String] negative_color - The hex code to use for the negative color.
+  # @param [String|Array] neutral_color - The hex or rgb code to use for the neutral color.
+  # @param [String|Array] positive_color - The hex or rgb code to use for the positive color.
+  # @param [String|Array] negative_color - The hex or rgb code to use for the negative color.
   def initialize(
     value:,
     domain: nil,
@@ -174,12 +174,6 @@ class ColorCode
   # @return [Number].
   def normalized_value
     clamped_value - min_value
-  end
-
-  # Normalize the range in positive values [0, a_positive_value].
-  # @return [Number].
-  def normalized_min_value
-    0
   end
 
   # Calculate distance to min value on a 0,1 scale.
