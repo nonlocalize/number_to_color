@@ -6,24 +6,17 @@ require_relative "number_to_color/version"
 #
 # @author Luke Fair <fair@hey.com>
 class ColorCode
-  # '#0ea5e9'
-  DEFAULT_END = [14, 165, 233].freeze
-  # 'f87171'
-  DEFAULT_START = [248, 113, 113].freeze
-  # 'fff'
-  DEFAULT_MIDDLE = [255, 255, 255].freeze
-
   # @param [Number] value The table cell's numerical value
   # @param [Array] domain - Two or three-element arrays (e.g., [0, 20], [-20, 0, 20])
-  # @param [String|Array] middle_color - The hex or rgb code to use for the middle color.
-  # @param [String|Array] end_color - The hex or rgb code to use for the end color.
-  # @param [String|Array] start_color - The hex or rgb code to use for the start color.
+  # @param [String|Array] middle_color - The hex or rgb code to use for the middle color (default `white`).
+  # @param [String|Array] end_color - The hex or rgb code to use for the end color (default `blue`).
+  # @param [String|Array] start_color - The hex or rgb code to use for the start color  (default `red`).
   def initialize(
     value:,
     domain: nil,
-    middle_color: nil,
-    end_color: nil,
-    start_color: nil
+    middle_color: [255, 255, 255],
+    end_color: [14, 165, 233],
+    start_color: [248, 113, 113]
   )
     @value = value.to_f
     @domain = domain
@@ -46,9 +39,9 @@ class ColorCode
               :middle_rgb
 
   def set_colors
-    @end_rgb = end_color ? format_color(end_color) : DEFAULT_END
-    @start_rgb = start_color ? format_color(start_color) : DEFAULT_START
-    @middle_rgb = middle_color ? format_color(middle_color) : DEFAULT_MIDDLE
+    @end_rgb = format_color(end_color)
+    @start_rgb = format_color(start_color)
+    @middle_rgb = format_color(middle_color)
   end
 
   # Returns the hex code for any RGB color.
@@ -61,9 +54,9 @@ class ColorCode
   # @param [String|Array] color The hex or rgb code.
   # @return [Array].
   def format_color(color)
-    return color.scan(/.{2}/).map(&:hex) if color.instance_of? String
+    return color.gsub("#", "").scan(/../).map(&:hex) if color.instance_of? String
 
-    color
+    color unless color.nil?
   end
 
   # If the domain is inverted, switch its order.
@@ -115,9 +108,9 @@ class ColorCode
   # Returns the start color in RGB format.
   # @return [Array].
   def start_color_rgb
-    return end_rgb if inverted_order? && value_is_start?
+    return end_rgb if inverted_order? && (value_is_in_starting_half? || two_item_domain?)
 
-    return start_rgb if value_is_start?
+    return start_rgb if value_is_in_starting_half? || two_item_domain?
 
     middle_rgb
   end
@@ -125,31 +118,31 @@ class ColorCode
   # Returns the end color in RGB format.
   # @return [Array].
   def end_color_rgb
-    return middle_rgb if value_is_start?
+    return middle_rgb if value_is_in_starting_half? && three_item_domain?
 
     return start_rgb if inverted_order?
 
     end_rgb
   end
 
-  # Returns if the value is considered start.
+  # Returns if the value is considered in the first half of the domain.
   # @return [Boolean].
-  def value_is_start?
-    clamped_value.between?(normalized_domain.first, mean_value) || clamped_value == mean_value
+  def value_is_in_starting_half?
+    three_item_domain? && (clamped_value.between?(normalized_domain.first, mean_value) || clamped_value == mean_value)
   end
 
-  # Returns the domain's min value, or what is considered 'start'.
+  # Returns the domain's min value.
   # @return [Number].
   def min_value
-    return mean_value unless value_is_start?
+    return mean_value unless value_is_in_starting_half? || two_item_domain?
 
     normalized_domain.first
   end
 
-  # Returns the domain's min value, or what is considered 'start'.
+  # Returns the domain's max value.
   # @return [Number].
   def max_value
-    return mean_value if value_is_start?
+    return mean_value if value_is_in_starting_half? && three_item_domain?
 
     normalized_domain.last
   end
@@ -184,5 +177,17 @@ class ColorCode
 
   def distance_difference
     1 - distance_from_min_value
+  end
+
+  # Returns if the domain has two values.
+  # @return [Boolean].
+  def two_item_domain?
+    domain.length == 2
+  end
+
+  # Returns if the domain has three values.
+  # @return [Boolean].
+  def three_item_domain?
+    domain.length == 3
   end
 end
