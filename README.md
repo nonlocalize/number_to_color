@@ -11,7 +11,7 @@ All colors are customizable, but defaults to a linear gradient between red (![#e
 ### Params
 * `value`: The numerical value to color code for.
 
-* `domain`: The numerical domain, or "range", for the color gradient. This can be a 2 or 3-item array. In a 2-item array, the midpoint is automatically set as the "neutral" value/color. In a 3-item array, you can set the midpoint to be anywhere between the first and last item (e.g., `[0, 5, 7]`).
+* `domain`: The numerical domain, or "range", for the color gradient. This can be a 2 or 3-item array. In a 3-item array, you can set the midpoint to be anywhere between the first and last item (e.g., `[0, 5, 7]`).
 
 * `neutral_color` / `positive_color` / `negative_color`: (optional) Custom colors that can be passed in to override the defaults. These can be hex or RGB codes.
 <br>
@@ -27,7 +27,7 @@ require 'number_to_color'
 ### Examples
 #### Simple linear range between two numbers
 ```
-ColorCode.new(value: 2, domain: [1, 3]).to_hex
+ColorCode.new(value: 2, domain: [1, 2, 3]).to_hex
 
 // #ffffff (neutral color)
 ```
@@ -45,7 +45,7 @@ ColorCode.new(value: 5, domain: [1, 5, 7]).to_hex
 
 #### Inverted domain
 ```
-ColorCode.new(value: 1, domain: [7, 1]).to_hex
+ColorCode.new(value: 1, domain: [7, 3.5, 1]).to_hex
 
 // #0ea5e9 ("good" color)
 ```
