@@ -4,7 +4,16 @@ Color code a value within a numerical range.
 
 All colors are customizable, but defaults to a linear gradient between red (![#ef4444](https://placehold.co/15x15/ef4444/ef4444.png) "negative") and blue (![#0ea5e9](https://placehold.co/15x15/0ea5e9/0ea5e9.png) "positive"), with white as the midpoint for "neutral" or average.
 
-  
+## Installation
+Install the gem and add to the application's Gemfile by executing:
+```
+$ bundle add number_to_color
+```
+
+If bundler is not being used to manage dependencies, install the gem by executing:
+```
+$ gem install number_to_color
+```
 
 ## Usage
 
